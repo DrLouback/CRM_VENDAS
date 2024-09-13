@@ -2,6 +2,7 @@ import streamlit as st
 from datetime import time,datetime
 from contrato import Vendas
 import sys
+from database import salvar_no_postgres
 
 def main():
     
@@ -14,16 +15,18 @@ def main():
     produto = st.selectbox('Produto vendido',['ZapFlow com Gemini','ZapFlow com Lhama','ZapFlow com ChatGPT'])
 
     if st.button('Salvar'):
-        data_hora = datetime.combine(date= data, time= hora) #type: ignore 
-        venda = Vendas(
-            email= email,
-            data= data_hora,
-            valor= valor,
-            quantidade= quantidade,
-            produto= produto
-        )
-        st.write('Salvo no banco de dados')
-
+        try:
+            data_hora = datetime.combine(date= data, time= hora) #type: ignore 
+            venda = Vendas(
+                email= email,
+                data= data_hora,
+                valor= valor,
+                quantidade= quantidade,
+                produto= produto
+            )
+            salvar_no_postgres(venda)
+        except Exception as e:
+            st.error(f'Ocorreu um erro {e}')
 
 if __name__ == '__main__':
     main()

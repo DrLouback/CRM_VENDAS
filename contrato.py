@@ -12,7 +12,7 @@ class ProdutoEnum(str, Enum):
 
 class Vendas(BaseModel):
     email: EmailStr
-    data: str
+    data: datetime
     valor: PositiveFloat
     quantidade: PositiveInt
     produto: str
