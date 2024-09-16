@@ -17,11 +17,17 @@ DB_PORT = os.getenv('DB_PORT')
 
 def salvar_no_postgres(dados: Vendas):
     try:
-            conn = psycopg2.connect(f"host={DB_HOST}, dbname= {DB_NAME}, user= {DB_USER}, password= {DB_PASSWORD}, port = {DB_PORT}")
+            conn = psycopg2.connect(
+            host=DB_HOST,
+            database=DB_NAME,
+            user=DB_USER,
+            password=DB_PASSWORD
+        )
+            cursor = conn.cursor()
             cursor = conn.cursor()
 
             
-            insert_query= sql.SQL('INSER INTO vendas (email, data, valor, quantidade, produto) VALUES (%s,%s,%s,%s,%s)')
+            insert_query= sql.SQL('INSERT INTO vendas (email, data, valor, quantidade, produto) VALUES (%s,%s,%s,%s,%s)')
             cursor.execute(insert_query, (
                     dados.email,
                     dados.data,
@@ -29,8 +35,10 @@ def salvar_no_postgres(dados: Vendas):
                     dados.quantidade,
                     dados.produto
 
-            ))
+            )
+            )
+            conn.commit() 
 
-
+                  
     except ValidationError as e:
             st.error(f'Deu erro {e}')
